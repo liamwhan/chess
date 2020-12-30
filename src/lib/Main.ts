@@ -42,8 +42,10 @@ export default class Main {
             frame: false,
             show: false,
             webPreferences: {
+                devTools: true,
                 nodeIntegration: true,
-                contextIsolation: false
+                contextIsolation: false,
+                enableRemoteModule: true
             }
         };
 

@@ -12,7 +12,9 @@
         "experimentalDecorators": true
     },
     "compileOnSave": false,
-    "include": [
-        "src/lib/**/*"
+    "files": [
+        "src/lib/Main.ts",
+        "src/lib/App.ts",
+        "src/lib/IndexView.ts"
     ]
 }

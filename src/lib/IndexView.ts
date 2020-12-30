@@ -2,7 +2,7 @@ import { ipcRenderer, remote } from "electron";
 import * as log from "electron-log";
 import IPCEventType from "./Channels";
 import { KeyState } from "./InputState";
-
+import { Board } from "./Controls/Board";
 const
     $btnMinimise = $("#btnMinimise"),
     $btnMaximise = $("#btnMaximise"),
@@ -16,6 +16,7 @@ $(document).ready(() => {
     $btnMaximise.click((e: JQuery.Event) =>        { (remote.getCurrentWindow().isMaximized()) ? remote.getCurrentWindow().unmaximize() : remote.getCurrentWindow().maximize(); });
     $btnQuit.click((e: JQuery.Event) =>            { ipcRenderer.send(IPCEventType.APP_QUIT); });
     $btnDevTools.click((e: JQuery.Event) =>        { ipcRenderer.send(IPCEventType.SHOW_DEV_TOOLS); });
+    const board = new Board();
 
     log.info(`Page Loaded...`);
 });

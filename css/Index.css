@@ -25,3 +25,18 @@ button, html [type="button"], [type="reset"], [type="submit"] {
 #drawing {
     border: 1px solid green;
 }
+
+#container {
+    position: relative;
+    
+}
+
+#board {
+    position: absolute;
+}
+#container, #board {
+    height: 1600px;
+    width: 1600px;
+    top: 0px;
+    left: 0px;
+}
