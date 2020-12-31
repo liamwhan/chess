@@ -35,8 +35,8 @@ button, html [type="button"], [type="reset"], [type="submit"] {
     position: absolute;
 }
 #container, #board {
-    height: 1600px;
-    width: 1600px;
+    height: 800px;
+    width: 800px;
     top: 0px;
     left: 0px;
 }

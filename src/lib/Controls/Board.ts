@@ -1,10 +1,13 @@
 import Graphics from "./Graphics";
+import BoardManager from "./BoardManager";
+import {Colour} from "./Colours";
 
 export class Board {
 
     private readonly canvas: HTMLCanvasElement;
     private readonly width: number;
     private readonly height: number;
+    private readonly boardManager: BoardManager;
 
     private get context(): CanvasRenderingContext2D {
         const ctx = this.canvas.getContext("2d");
@@ -21,12 +24,16 @@ export class Board {
         this.canvas.height = Graphics.Scale(container.height());
         this.canvas.style.width = container.width() + "px";
         this.canvas.style.height = container.height() + "px";
+        this.boardManager = new BoardManager();
 
-        this.SetupBoard();
+        this.DrawBoard();
+        // this.DrawPieces();
+        
     }
 
-    private SetupBoard(): void {
+    private DrawBoard(): void {
         const ctx = this.context;
+        ctx.save();
         const l = this.width / 8;
         let isWhite = true;
 
@@ -35,7 +42,7 @@ export class Board {
             isWhite = yi % 2 == 0;
             for (let xi = 0, x = 0; xi < this.width; xi++) {
                 x = xi * l;
-                ctx.fillStyle = (isWhite) ? "#ffffff" : "#000000";
+                ctx.fillStyle = (isWhite) ? Colour.WHITE_CELL : Colour.BLACK_CELL;
                 ctx.beginPath();
                 ctx.rect(x, y, l, l);
                 ctx.fill();
@@ -43,6 +50,58 @@ export class Board {
                 isWhite = !isWhite;
             }
         }
+        ctx.restore();
 
+        const offset = l / 4;
+        const imgSize = l / 2;
+        const cells = this.boardManager.board;
+        
+        // const img = new Image(l/2, l/2);
+        // img.onload = function() {
+        //     ctx.drawImage(img, l/4, l/4, l/2, l/2);
+        // }
+        // img.src = "../../img/king-w.svg"
+
+        for (let i = 0; i < cells.length; i++) {
+            const cell = cells[i];
+
+            if (!cell.Occupant) continue;
+            const piece = cell.Occupant;
+            const x = cell.Coordinates.x * l + offset;
+            const y = cell.Coordinates.y * l + offset;
+            const icon = piece.Icon;
+            const img = new Image(imgSize, imgSize);
+            img.onload = function() {
+                console.log("1piece:", piece);
+                console.log("1x:", x, "1y:", y);
+                ctx.drawImage(img, x, y, imgSize, imgSize);
+            }
+            img.src = `../../img/${icon.path}`;
+        }
+    }
+
+    private DrawPieces(): void {
+        const ctx = this.context;
+        const cells = this.boardManager.board;
+        const l = this.width / 8;
+        const offset = l / 4;
+        const imgSize = l / 2;
+        
+        for (let i = 0; i < cells.length; i++) {
+            const cell = cells[i];
+
+            if (!cell.Occupant) continue;
+            const piece = cell.Occupant;
+            const x = cell.Coordinates.x * l + offset;
+            const y = cell.Coordinates.y * l + offset;
+            const icon = piece.Icon;
+            const img = new Image(imgSize, imgSize);
+            img.onload = function() {
+                console.log("piece:", piece);
+                console.log("x:", x, "y:", y);
+                ctx.drawImage(img, x, y, imgSize, imgSize);
+            }
+            img.src = `../../img/${icon.path}`;
+        }
     }
 }

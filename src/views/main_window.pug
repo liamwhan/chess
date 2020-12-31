@@ -21,9 +21,11 @@ html(lang="en")
           i.far.fa-window-maximize
         li#btnQuit.nav-item.btn.btn-success(type="button" title="Close")
           i.fas.fa-window-close
-    main
-      #container
-        canvas#board
+    main.container
+      .row
+        .col.d-flex.justify-content-around     
+          #container
+            canvas#board
     footer.footer
       // Load jquery and SVG.js via require
       script.
