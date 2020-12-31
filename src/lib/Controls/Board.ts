@@ -9,10 +9,8 @@ export class Board {
     private readonly height: number;
     private readonly boardManager: BoardManager;
 
-    private context(): CanvasRenderingContext2D {
-        const ctx = this.canvas.getContext("2d");
-        ctx.scale(Graphics.Dpi, Graphics.Dpi);
-        return ctx;
+    private get context(): CanvasRenderingContext2D {
+        return this.canvas.getContext("2d");
     }
 
     constructor() {
@@ -25,11 +23,17 @@ export class Board {
         this.canvas.style.width = container.width() + "px";
         this.canvas.style.height = container.height() + "px";
         this.boardManager = new BoardManager();
+
+        // Initialise the scaling here (not in the context getter) otherwise calls to scale() are cumulative!
+        const ctx = this.canvas.getContext("2d");
+        ctx.scale(Graphics.Dpi, Graphics.Dpi);
+        ctx.save();
+
     }
 
     public DrawBoard(): this {
-        const ctx = this.context();
-        ctx.save();
+        const ctx = this.context;
+    
         const l = this.width / 8;
         let isWhite = true;
 
@@ -46,42 +50,11 @@ export class Board {
                 isWhite = !isWhite;
             }
         }
-        ctx.restore();
-
-        // const offset = l / 4;
-        // const imgSize = l / 2;
-        // const cells = this.boardManager.board;
-        
-        // const img = new Image(l/2, l/2);
-        // img.onload = function() {
-        //     ctx.drawImage(img, l/4, l/4, l/2, l/2);
-        // }
-        // img.src = "../../img/king-w.svg"
-
-        // console.log(Graphics.Dpi);
-        // console.log(ctx.getTransform());
-        // for (let i = 0; i < cells.length; i++) {
-        //     const cell = cells[i];
-
-        //     if (!cell.Occupant) continue;
-        //     const piece = cell.Occupant;
-        //     const x = cell.Coordinates.x * l + offset;
-        //     const y = cell.Coordinates.y * l + offset;
-        //     const icon = piece.Icon;
-        //     const img = new Image(imgSize, imgSize);
-        //     img.onload = function() {
-        //         ctx.drawImage(img, x, y, imgSize, imgSize);
-        //     }
-        //     img.src = `../../img/${icon.path}`;
-        // }
-
-
         return this;
     }
 
     public DrawPieces(): this {
-        const ctx = this.context();
-        ctx.save();
+        const ctx = this.context;
         const cells = this.boardManager.board;
         const l = this.width / 8;
         const offset = l / 4;
