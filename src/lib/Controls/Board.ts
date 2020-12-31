@@ -9,7 +9,7 @@ export class Board {
     private readonly height: number;
     private readonly boardManager: BoardManager;
 
-    private get context(): CanvasRenderingContext2D {
+    private context(): CanvasRenderingContext2D {
         const ctx = this.canvas.getContext("2d");
         ctx.scale(Graphics.Dpi, Graphics.Dpi);
         return ctx;
@@ -25,14 +25,10 @@ export class Board {
         this.canvas.style.width = container.width() + "px";
         this.canvas.style.height = container.height() + "px";
         this.boardManager = new BoardManager();
-
-        this.DrawBoard();
-        // this.DrawPieces();
-        
     }
 
-    private DrawBoard(): void {
-        const ctx = this.context;
+    public DrawBoard(): this {
+        const ctx = this.context();
         ctx.save();
         const l = this.width / 8;
         let isWhite = true;
@@ -52,9 +48,9 @@ export class Board {
         }
         ctx.restore();
 
-        const offset = l / 4;
-        const imgSize = l / 2;
-        const cells = this.boardManager.board;
+        // const offset = l / 4;
+        // const imgSize = l / 2;
+        // const cells = this.boardManager.board;
         
         // const img = new Image(l/2, l/2);
         // img.onload = function() {
@@ -62,31 +58,38 @@ export class Board {
         // }
         // img.src = "../../img/king-w.svg"
 
-        for (let i = 0; i < cells.length; i++) {
-            const cell = cells[i];
+        // console.log(Graphics.Dpi);
+        // console.log(ctx.getTransform());
+        // for (let i = 0; i < cells.length; i++) {
+        //     const cell = cells[i];
 
-            if (!cell.Occupant) continue;
-            const piece = cell.Occupant;
-            const x = cell.Coordinates.x * l + offset;
-            const y = cell.Coordinates.y * l + offset;
-            const icon = piece.Icon;
-            const img = new Image(imgSize, imgSize);
-            img.onload = function() {
-                console.log("1piece:", piece);
-                console.log("1x:", x, "1y:", y);
-                ctx.drawImage(img, x, y, imgSize, imgSize);
-            }
-            img.src = `../../img/${icon.path}`;
-        }
+        //     if (!cell.Occupant) continue;
+        //     const piece = cell.Occupant;
+        //     const x = cell.Coordinates.x * l + offset;
+        //     const y = cell.Coordinates.y * l + offset;
+        //     const icon = piece.Icon;
+        //     const img = new Image(imgSize, imgSize);
+        //     img.onload = function() {
+        //         ctx.drawImage(img, x, y, imgSize, imgSize);
+        //     }
+        //     img.src = `../../img/${icon.path}`;
+        // }
+
+
+        return this;
     }
 
-    private DrawPieces(): void {
-        const ctx = this.context;
+    public DrawPieces(): this {
+        const ctx = this.context();
+        ctx.save();
         const cells = this.boardManager.board;
         const l = this.width / 8;
         const offset = l / 4;
         const imgSize = l / 2;
-        
+        console.log(Graphics.Dpi);
+        console.log(ctx.getTransform());
+
+        ctx.restore();
         for (let i = 0; i < cells.length; i++) {
             const cell = cells[i];
 
@@ -97,11 +100,11 @@ export class Board {
             const icon = piece.Icon;
             const img = new Image(imgSize, imgSize);
             img.onload = function() {
-                console.log("piece:", piece);
-                console.log("x:", x, "y:", y);
                 ctx.drawImage(img, x, y, imgSize, imgSize);
             }
             img.src = `../../img/${icon.path}`;
         }
+
+        return this;
     }
 }

@@ -1,12 +1,11 @@
 export default class Graphics {
-    private static readonly dpi: number = window.devicePixelRatio;
-
+    
     public static get Dpi(): number {
-        return this.dpi;
+        return window.devicePixelRatio;
     }
 
     public static Scale(input: number): number {
-        return Math.round(input * this.dpi);
+        return Math.round(input * this.Dpi);
     }
 
     

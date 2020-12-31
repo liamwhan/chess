@@ -8,15 +8,18 @@ const
     $btnMaximise = $("#btnMaximise"),
     $btnQuit = $("#btnQuit"),
     $btnDevTools = $("#btnDevTools")
-;
+    ;
 
-$(document).ready(() => {
+$(() => {
     KeyState.Init();
-    $btnMinimise.click((e: JQuery.Event) =>        { remote.getCurrentWindow().minimize(); });
-    $btnMaximise.click((e: JQuery.Event) =>        { (remote.getCurrentWindow().isMaximized()) ? remote.getCurrentWindow().unmaximize() : remote.getCurrentWindow().maximize(); });
-    $btnQuit.click((e: JQuery.Event) =>            { ipcRenderer.send(IPCEventType.APP_QUIT); });
-    $btnDevTools.click((e: JQuery.Event) =>        { ipcRenderer.send(IPCEventType.SHOW_DEV_TOOLS); });
-    const board = new Board();
+    $btnMinimise.on("click", () => { remote.getCurrentWindow().minimize(); });
+    $btnMaximise.on("click", () => { (remote.getCurrentWindow().isMaximized()) ? remote.getCurrentWindow().unmaximize() : remote.getCurrentWindow().maximize(); });
+    $btnQuit.on("click", () => { ipcRenderer.send(IPCEventType.APP_QUIT); });
+    $btnDevTools.on("click", () => { ipcRenderer.send(IPCEventType.SHOW_DEV_TOOLS); });
+    new Board()
+        .DrawBoard()
+        .DrawPieces()
+        ;
 
     log.info(`Page Loaded...`);
 });
