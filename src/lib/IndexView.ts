@@ -1,7 +1,7 @@
 import { ipcRenderer, remote } from "electron";
 import * as log from "electron-log";
-import IPCEventType from "./Channels";
-import { KeyState } from "./InputState";
+import IPCEventType from "./IPCEventType";
+import { KeyState } from "./Common/InputState";
 import { Board } from "./Controls/Board";
 const
     $btnMinimise = $("#btnMinimise"),

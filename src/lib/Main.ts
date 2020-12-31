@@ -2,7 +2,7 @@ import { App, BrowserWindow, ipcMain } from "electron";
 import * as log from "electron-log";
 import * as path from "path";
 import * as url from "url";
-import IPCEventType from "./Channels";
+import IPCEventType from "./IPCEventType";
 import { Config } from "./Config";
 
 // Initialise Logging plugin

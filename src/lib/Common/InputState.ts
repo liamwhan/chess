@@ -1,5 +1,7 @@
 import { ipcRenderer } from "electron";
-import IPCEventType from "./Channels";
+import IPCEventType from "../IPCEventType";
+import { Channel } from "./Channels";
+import { PubSub } from "./PubSub";
 declare const window: any;
 
 /**
@@ -49,9 +51,15 @@ export class KeyState {
     public static Init() {
         $(window).on("keydown", (e: JQuery.Event) => this.onKeyDown(e));
         $(window).on("keyup", (e: JQuery.Event) => this.onKeyUp(e));
+        $(window).on("click", (e: JQuery.ClickEvent) => this.onClick(e))
 
         ipcRenderer.on(IPCEventType.MAIN_WINDOW_BLUR, this.onMainWindowFocusChange);
         ipcRenderer.on(IPCEventType.MAIN_WINDOW_FOCUS, this.onMainWindowFocusChange);
+    }
+
+    private static onClick(e: JQuery.ClickEvent) : void {
+        const {clientX, clientY} = e;
+        PubSub.Publish(Channel.MOUSE_CLICK, {x: clientX, y: clientY});
     }
 
     private static onMainWindowFocusChange(): void {

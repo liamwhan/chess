@@ -1,3 +1,4 @@
+import { isNullOrUndefined } from "../Common/Utils";
 import Cell from "./Cell";
 import { Point } from "./Math/Point";
 import { King, Queen, Bishop, Knight, Rook, Pawn, Piece } from "./Pieces/Pieces";
@@ -48,16 +49,23 @@ export default class BoardManager {
         return this.whitePieces.concat(this.blackPieces);
     }
 
-    public board: Cell[] = [];
+    public cells: Cell[] = [];
 
-    constructor() {
+    constructor(cellSize: number) {
         for(let y = 0; y < 8; y++) {
             for(let x = 0; x < 8; x++) {
                 const point = new Point(x, y);
                 const occupant = this.allPieces.find(p => point.Equals(p.GridPosition));
-                const cell = new Cell(point, occupant);
-                this.board.push(cell);
+                const cell = new Cell(cellSize, point, occupant);
+                this.cells.push(cell);
             }
         }
+    }
+
+    public OnClick(clickPosCS: Point): void {
+        const clickedCell = this.cells.find(c => c.IsColliding(clickPosCS));
+        if (isNullOrUndefined(clickedCell)) return;
+
+        clickedCell.OnCollision();
     }
 }

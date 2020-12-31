@@ -1,3 +1,6 @@
+import { Rect } from ".";
+import { isNullOrUndefined } from "../../Common/Utils";
+
 export interface IPoint {
     x: number;
     y: number;
@@ -9,14 +12,20 @@ export class Point implements IPoint {
 
     public get IPoint(): IPoint {
         return {
-            x: this.x, 
+            x: this.x,
             y: this.y
         };
     }
-    
+
+    public static AABBCollision(rect1: Rect, rect2: Rect): boolean {
+        return (rect1.x < rect2.x + rect2.width &&
+            rect1.x + rect1.width > rect2.x &&
+            rect1.y < rect2.y + rect2.height &&
+            rect1.height + rect1.y > rect2.y);
+    }
+
     constructor(x: number | IPoint, y?: number) {
-        if (typeof(x) === "number")
-        {
+        if (typeof (x) === "number") {
             this.x = x;
             this.y = y;
         } else {
@@ -24,6 +33,11 @@ export class Point implements IPoint {
             this.y = (x as IPoint).y;
 
         }
+    }
+
+    public ToRect(w: number, h?: number): Rect {
+        if (isNullOrUndefined(h)) h = w;
+        return new Rect(this.x, this.y, w, h);
     }
 
     public Equals(other: IPoint): boolean {
@@ -41,7 +55,11 @@ export class Point implements IPoint {
     public Add(other: IPoint): Point {
         return new Point(this.x + other.x, this.y + other.y);
     }
-    
+
+    public Scale(scalar: number): Point {
+        return new Point(this.x * scalar, this.y * scalar);
+    }
+
     public DistanceTo(other: IPoint): number {
         return Math.sqrt(((this.x - other.x) ** 2) + ((this.y - other.y) ** 2));
     }
@@ -54,6 +72,4 @@ export class Point implements IPoint {
         const sqD = this.SqDistanceTo(other);
         return sqD <= sqRadius;
     }
-
-
 }

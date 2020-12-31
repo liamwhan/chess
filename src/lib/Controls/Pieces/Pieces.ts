@@ -30,10 +30,6 @@ export abstract class Piece {
         this.icon = GetIcon(player, piece);
     }
 
-    public Draw(): void {
-
-    }
-
 }
 
 export class Pawn extends Piece {
