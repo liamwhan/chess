@@ -1,5 +1,5 @@
 import { Player } from "../Pieces/Player";
-import { Piece } from "../Pieces/Pieces";
+import { Piece } from "../Pieces/Piece";
 import Cell from "../Cell";
 import { GameMove } from "./Types";
 

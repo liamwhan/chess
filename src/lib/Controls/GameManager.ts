@@ -1,24 +1,20 @@
 import { Channel } from "../Common/Channels";
 import { PubSub } from "../Common/PubSub";
 import { isNullOrUndefined } from "../Common/Utils";
-import Cell, { CellShade } from "./Cell";
+import Cell from "./Cell";
+import { CellShade } from "./CellShade";
 import { Point } from "./Math/Point";
-import { Piece } from "./Pieces/Pieces";
-import { King } from "./Pieces/King";
-import { Queen } from "./Pieces/Queen";
-import { Bishop } from "./Pieces/Bishop";
-import { Knight } from "./Pieces/Knight";
-import { Rook } from "./Pieces/Rook";
-import { Pawn } from "./Pieces/Pawn";
+import { Bishop, King, Knight, Pawn, Piece, Queen, Rook } from "./Pieces";
 import { Player } from "./Pieces/Player";
-import { GameTurn, GameTurnHistory } from "./State/Types";
+import { GameTurn, GameTurnHistory, GameState } from "./State/Types";
 import { Move } from "./State/Move";
+import * as fs from "fs";
+import * as path from "path";
+
 export interface Selection {
     cell: Cell;
     piece?: Piece
 }
-
-
 
 export default class GameManager {
     private whitePieces: Piece[] = [
@@ -71,10 +67,13 @@ export default class GameManager {
     };
 
     constructor() {
-        this.SetupGameBoard();   
+        this.SetupGameBoard();
+        this.turnHistory.turns.push(this.GetState());
         PubSub.Subscribe(Channel.LEGAL_MOVES_CALCULATED, this.subId, (m: Point[]) => this.OnLegalMovesCalculated(m));
         PubSub.Subscribe(Channel.GAME_STATE_PIECE_SELECTED, this.subId, (c: Cell, p?: Piece) => this.OnPieceSelected(c, p));
         PubSub.Subscribe(Channel.DESELECT_ALL_CELLS, this.subId, () => this.OnDeselectAll());
+        PubSub.Subscribe(Channel.GAME_STATE_SAVE, this.subId, () => this.SaveGame());
+        PubSub.Subscribe(Channel.GAME_STATE_LOAD, this.subId, (f?: string) => this.LoadGame(f));
     }
 
     private GetState(): GameTurn {
@@ -84,6 +83,39 @@ export default class GameManager {
             number: this.currentTurnNumber,
             move: null
         }
+    }
+
+    private LoadGame(filename?: string) {
+        const filepath = path.resolve(__dirname, `../../../game.json`);
+        const serialised = fs.readFileSync(filepath, {
+            encoding: "utf8"
+        });
+        const newState: GameState = JSON.parse(serialised);
+        this.LoadState(newState);
+        PubSub.Publish(Channel.REDRAW_ALL_CELLS);
+    }
+
+    private LoadState(state: GameState): void {
+        const latestTurn = state.history.turns[state.history.turns.length - 1];
+        const cells = latestTurn.boardState.map(c => Cell.FromState(c));
+        this.cells = cells;
+
+    }
+
+    private SaveGame(): void {
+        const gameState: GameState = {
+            history: this.turnHistory,
+            player: this.currentTurnPlayer,
+            turn: this.currentTurnNumber,
+            filename: "game.json"
+        }
+
+        const outfile = path.resolve(__dirname, `../../../${gameState.filename}`);
+        const serialized = JSON.stringify(gameState, null, 2);
+        fs.writeFileSync(outfile, serialized, {
+            encoding: "utf8"
+        });
+        console.log("Game saved to", outfile);
     }
 
     private CommitTurn(move: Move) {
@@ -100,19 +132,15 @@ export default class GameManager {
     }
 
     private SetupGameBoard(): void {
-        const container = $("#container");
-        const width = container.width();
-        const l = width / 8;
-
         let isWhite = true;
 
         for (let y = 0; y < 8; y++) {
             isWhite = y % 2 == 0;
-            for (let x = 0; x < width; x++) {
+            for (let x = 0; x < 8; x++) {
                 const pos = new Point(x, y);
                 const shade = (isWhite) ? CellShade.LIGHT : CellShade.DARK;
                 const occupant = this.GetCellOccupant(pos);
-                const cell = new Cell(l, shade, pos, occupant);
+                const cell = new Cell(shade, pos, occupant);
                 this.cells.push(cell);
 
                 isWhite = !isWhite;

@@ -1,0 +1,624 @@
+{
+  "history": {
+    "turns": [
+      {
+        "boardState": [
+          {
+            "location": {
+              "x": 0,
+              "y": 0
+            },
+            "occupant": {
+              "id": "ROOK",
+              "player": "White"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 1,
+              "y": 0
+            },
+            "occupant": {
+              "id": "KNIGHT",
+              "player": "White"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 2,
+              "y": 0
+            },
+            "occupant": {
+              "id": "BISHOP",
+              "player": "White"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 3,
+              "y": 0
+            },
+            "occupant": {
+              "id": "KING",
+              "player": "White"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 4,
+              "y": 0
+            },
+            "occupant": {
+              "id": "QUEEN",
+              "player": "White"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 5,
+              "y": 0
+            },
+            "occupant": {
+              "id": "BISHOP",
+              "player": "White"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 6,
+              "y": 0
+            },
+            "occupant": {
+              "id": "KNIGHT",
+              "player": "White"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 7,
+              "y": 0
+            },
+            "occupant": {
+              "id": "ROOK",
+              "player": "White"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 0,
+              "y": 1
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "White"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 1,
+              "y": 1
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "White"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 2,
+              "y": 1
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "White"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 3,
+              "y": 1
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "White"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 4,
+              "y": 1
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "White"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 5,
+              "y": 1
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "White"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 6,
+              "y": 1
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "White"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 7,
+              "y": 1
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 0,
+              "y": 2
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 1,
+              "y": 2
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 2,
+              "y": 2
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 3,
+              "y": 2
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 4,
+              "y": 2
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 5,
+              "y": 2
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 6,
+              "y": 2
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 7,
+              "y": 2
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "White"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 0,
+              "y": 3
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 1,
+              "y": 3
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 2,
+              "y": 3
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 3,
+              "y": 3
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 4,
+              "y": 3
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 5,
+              "y": 3
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 6,
+              "y": 3
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 7,
+              "y": 3
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 0,
+              "y": 4
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 1,
+              "y": 4
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 2,
+              "y": 4
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 3,
+              "y": 4
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 4,
+              "y": 4
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 5,
+              "y": 4
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 6,
+              "y": 4
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 7,
+              "y": 4
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 0,
+              "y": 5
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 1,
+              "y": 5
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 2,
+              "y": 5
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 3,
+              "y": 5
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 4,
+              "y": 5
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 5,
+              "y": 5
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 6,
+              "y": 5
+            },
+            "occupant": null,
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 7,
+              "y": 5
+            },
+            "occupant": null,
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 0,
+              "y": 6
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "Black"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 1,
+              "y": 6
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "Black"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 2,
+              "y": 6
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "Black"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 3,
+              "y": 6
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "Black"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 4,
+              "y": 6
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "Black"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 5,
+              "y": 6
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "Black"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 6,
+              "y": 6
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "Black"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 7,
+              "y": 6
+            },
+            "occupant": {
+              "id": "PAWN",
+              "player": "Black"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 0,
+              "y": 7
+            },
+            "occupant": {
+              "id": "ROOK",
+              "player": "Black"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 1,
+              "y": 7
+            },
+            "occupant": {
+              "id": "KNIGHT",
+              "player": "Black"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 2,
+              "y": 7
+            },
+            "occupant": {
+              "id": "BISHOP",
+              "player": "Black"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 3,
+              "y": 7
+            },
+            "occupant": {
+              "id": "KING",
+              "player": "Black"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 4,
+              "y": 7
+            },
+            "occupant": {
+              "id": "QUEEN",
+              "player": "Black"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 5,
+              "y": 7
+            },
+            "occupant": {
+              "id": "BISHOP",
+              "player": "Black"
+            },
+            "shade": 1
+          },
+          {
+            "location": {
+              "x": 6,
+              "y": 7
+            },
+            "occupant": {
+              "id": "KNIGHT",
+              "player": "Black"
+            },
+            "shade": 0
+          },
+          {
+            "location": {
+              "x": 7,
+              "y": 7
+            },
+            "occupant": {
+              "id": "ROOK",
+              "player": "Black"
+            },
+            "shade": 1
+          }
+        ],
+        "player": "White",
+        "number": 1,
+        "move": null
+      }
+    ]
+  },
+  "player": "White",
+  "turn": 1,
+  "filename": "game.json"
+}

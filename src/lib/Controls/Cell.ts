@@ -1,20 +1,12 @@
-import { Piece } from "./Pieces/Pieces";
+import { Piece } from "./Pieces/Piece";
 import { Point, IPoint } from "./Math/Point";
 import { PubSub } from "../Common/PubSub";
 import { Channel } from "../Common/Channels";
 import {BoardCell} from "./State/Types";
 import { isNullOrUndefined } from "../Common/Utils";
+import { CellShade } from "./CellShade";
+import { CellState } from "./CellState";
 
-export enum CellShade {
-    DARK,
-    LIGHT
-}
-
-export enum CellState {
-    None,
-    Selected,
-    MoveHighlighted
-}
 
 export default class Cell {
     private coordinates: Point;
@@ -26,8 +18,9 @@ export default class Cell {
     private cellState: CellState = CellState.None;
     private subId: string;
 
-    constructor(cellSize: number, cellShade: CellShade, coordinates: IPoint, occupant?: Piece) {
-        this.cellSize = cellSize;
+    constructor(cellShade: CellShade, coordinates: IPoint, occupant?: Piece) {
+        const w = $("#container").width();
+        this.cellSize = w / 8;
         this.coordinates = new Point(coordinates);
         this.occupant = occupant;
         this.cellShade = cellShade;
@@ -38,8 +31,14 @@ export default class Cell {
     public GetState(): BoardCell {
         return {
             location: this.coordinates.IPoint,
-            occupant: (this.IsOccupied) ? this.occupant.GetState() : null
+            occupant: (this.IsOccupied) ? this.occupant.GetState() : null,
+            shade: this.cellShade
         };
+    }
+
+    public static FromState(state: BoardCell): Cell {
+        let occupant = isNullOrUndefined(state.occupant) ? null : Piece.FromState(state.occupant, state.location);
+        return new Cell(state.shade, state.location, occupant);
     }
 
     public get Shade(): CellShade {

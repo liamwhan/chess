@@ -1,5 +1,14 @@
 import {Player} from "../Pieces/Player";
 import {IPoint} from "../Math";
+import { PieceName } from "../Pieces/PieceNames";
+import { CellShade } from "../CellShade";
+
+export interface GameState {
+    turn: number;
+    player: Player;
+    filename?: string;
+    history: GameTurnHistory;
+}
 
 export interface GameTurnHistory {
     turns: GameTurn[];
@@ -23,6 +32,7 @@ export interface GameMove {
 export interface BoardCell {
     location: IPoint;
     occupant?: BoardPiece;
+    shade: CellShade;
 }
 
 export interface BoardPiece {

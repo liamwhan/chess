@@ -4,7 +4,9 @@ import {Colour} from "./Colours";
 import {PubSub} from "../Common/PubSub";
 import { Channel } from "../Common/Channels";
 import { IPoint, Point, Rect } from "./Math";
-import Cell, { CellShade, CellState } from "./Cell";
+import Cell from "./Cell";
+import { CellState } from "./CellState";
+import { CellShade } from "./CellShade";
 
 export class Board {
 
@@ -117,7 +119,6 @@ export class Board {
     }
 
     public DrawBoard(): this {
-        const ctx = this.context;
         for(const cell of this.gameManager.Cells)
         {
             this.DrawCell(cell);

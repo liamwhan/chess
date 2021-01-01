@@ -22,6 +22,8 @@ export enum KeyCode {
     COMMAND_LEFT    = 91,
     COMMAND_RIGHT   = 93,
     SHIFT           = 16,
+    L               = 76,
+    S               = 83,
     Q               = 81,
     Z               = 90,
     Y               = 89,
@@ -73,14 +75,24 @@ export class KeyState {
             case KeyCode.CONTROL:
             case KeyCode.COMMAND_LEFT:
             case KeyCode.COMMAND_RIGHT:
-                if (this.CtrlKeyDown) { return; }
+                if (this.CtrlKeyDown) return;
                 e.preventDefault();
                 this.CtrlKeyDown = true;
                 break;
             case KeyCode.Q:
-                if (!this.CtrlKeyDown) { return; }
+                if (!this.CtrlKeyDown) return;
                 e.preventDefault();
                 ipcRenderer.send(IPCEventType.APP_QUIT);
+                break;
+            case KeyCode.S:
+                if (!this.CtrlKeyDown) return;
+                e.preventDefault();
+                PubSub.Publish(Channel.GAME_STATE_SAVE);
+                break;case KeyCode.S:
+            case KeyCode.L:
+                if (!this.CtrlKeyDown) return;
+                e.preventDefault();
+                PubSub.Publish(Channel.GAME_STATE_LOAD);
                 break;
             default:
                 return;
