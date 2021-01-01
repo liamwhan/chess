@@ -4,6 +4,9 @@ main, #drawing {
     min-height: 84vh;
 }
 
+.no-select {
+    user-select: none;
+}
 .drag {
     -webkit-app-region: drag;
 }

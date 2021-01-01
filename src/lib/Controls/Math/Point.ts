@@ -35,6 +35,10 @@ export class Point implements IPoint {
         }
     }
 
+    public toString(subId: boolean = false): string {
+        return subId ? `${this.x}-${this.y}` : JSON.stringify(this.IPoint);
+    }
+
     public ToRect(w: number, h?: number): Rect {
         if (isNullOrUndefined(h)) h = w;
         return new Rect(this.x, this.y, w, h);

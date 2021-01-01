@@ -1,4 +1,4 @@
 export enum Player {
-    WHITE,
-    BLACK
+    WHITE = "White",
+    BLACK = "Black"
 }

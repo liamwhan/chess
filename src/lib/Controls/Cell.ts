@@ -2,12 +2,49 @@ import { Piece } from "./Pieces/Pieces";
 import { Point, IPoint } from "./Math/Point";
 import { PubSub } from "../Common/PubSub";
 import { Channel } from "../Common/Channels";
+import {BoardCell} from "./State/Types";
+import { isNullOrUndefined } from "../Common/Utils";
+
+export enum CellShade {
+    DARK,
+    LIGHT
+}
+
+export enum CellState {
+    None,
+    Selected,
+    MoveHighlighted
+}
 
 export default class Cell {
     private coordinates: Point;
     private occupant: Piece = null;
     private cellSize: number;
     private selected: boolean = false;
+    private highlightMove: boolean = false;
+    private cellShade: CellShade;
+    private cellState: CellState = CellState.None;
+    private subId: string;
+
+    constructor(cellSize: number, cellShade: CellShade, coordinates: IPoint, occupant?: Piece) {
+        this.cellSize = cellSize;
+        this.coordinates = new Point(coordinates);
+        this.occupant = occupant;
+        this.cellShade = cellShade;
+        this.subId = "Cell-" + this.coordinates.toString(true);
+        PubSub.Subscribe(Channel.DESELECT_ALL_CELLS, this.subId, () => this.OnDeselectAllCells());
+    }
+
+    public GetState(): BoardCell {
+        return {
+            location: this.coordinates.IPoint,
+            occupant: (this.IsOccupied) ? this.occupant.GetState() : null
+        };
+    }
+
+    public get Shade(): CellShade {
+        return this.cellShade;
+    }
 
     public get Coordinates(): Point {
         return this.coordinates.Clone();
@@ -25,23 +62,66 @@ export default class Cell {
         this.occupant = value;
     }
 
-    public IsColliding(point: IPoint) : boolean {
+    public get IsOccupied(): boolean {
+        return !isNullOrUndefined(this.occupant);
+    }
+
+    public get State(): CellState {
+        return this.cellState;
+    }
+
+    public IsColliding(point: IPoint): boolean {
         return Point.AABBCollision(new Point(point).ToRect(1), this.CanvasCoordinates.ToRect(this.cellSize))
     }
 
-    public OnCollision(): void {
-        this.selected = !this.selected;
-        if (this.selected) {
-            PubSub.Publish(Channel.DRAW_CELL_OUTLINE, this);
-        } else {
-            PubSub.Publish(Channel.CLEAR_CELL_OUTLINE, this);
+    private OnDeselectAllCells(): void {
+        const redraw = (this.selected || this.highlightMove);
+        this.selected = false;
+        this.highlightMove = false;
+        this.cellState = CellState.None;
+        if (redraw) {
+            PubSub.Publish(Channel.REDRAW_CELL, this);
         }
     }
 
-    constructor(cellSize: number, coordinates: IPoint, occupant?: Piece) {
-        this.cellSize = cellSize;
-        this.coordinates = new Point(coordinates);
-        this.occupant = occupant;
+    public SetMoveHighlighted(): this {
+        this.selected = false;
+        this.highlightMove = true;
+        this.UpdateCellState();
+        return this;
     }
+
+    public OnCollision(): void {
+
+        this.selected = !this.selected;
+        this.UpdateCellState();
+
+        if (this.State === CellState.Selected) {
+            PubSub.Publish(Channel.LEGAL_MOVES_CALCULATED, this.Occupant.CalculatePossibleMoves());
+        }
+
+        PubSub.Publish(Channel.GAME_STATE_PIECE_SELECTED, this, this.Occupant);
+        PubSub.Publish(Channel.REDRAW_CELL, this);
+
+    }
+
+    private UpdateCellState(): void {
+        if (this.selected) {
+            if (this.IsOccupied) {
+                this.cellState = CellState.Selected;
+                return;
+            }
+        }
+        else
+            if (this.highlightMove) {
+                this.cellState = CellState.MoveHighlighted;
+                return;
+            }
+        // If we get here we don't want this cell selected at all
+        this.selected = false;
+        this.cellState = CellState.None;
+    }
+
+
 
 }
