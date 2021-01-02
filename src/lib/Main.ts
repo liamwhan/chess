@@ -41,6 +41,7 @@ export default class Main {
             height: 1080,
             frame: false,
             show: false,
+            icon: path.resolve(__dirname, "../../icons/CustomIcon.icns"),
             webPreferences: {
                 devTools: true,
                 nodeIntegration: true,
