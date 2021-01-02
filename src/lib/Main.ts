@@ -1,4 +1,4 @@
-import { App, BrowserWindow, ipcMain } from "electron";
+import { App, BrowserWindow, ipcMain, dialog } from "electron";
 import * as log from "electron-log";
 import * as path from "path";
 import * as url from "url";
@@ -77,9 +77,28 @@ export default class Main {
         win.webContents.devToolsWebContents.focus();
     }
 
+    public static ShowSaveDialog(win: BrowserWindow): void {
+        const saveFile = dialog.showSaveDialogSync(win, {
+            buttonLabel: "Save",
+            title: "Save Game",
+            filters: [
+                {name: "Chess JSON Files", extensions: ["cjson", "json"]}
+            ],
+            properties: [
+                "createDirectory",
+                "showOverwriteConfirmation",
+                "showHiddenFiles"
+            ]
+
+        });
+        if (saveFile !== undefined) {
+            win.webContents.send(IPCEventType.SAVE_DIALOG_RESULT, saveFile);
+        }
+    }
+
     public static SetupIPC() {
         ipcMain.on(IPCEventType.SHOW_DEV_TOOLS, () => { Main.ShowDevTools(Main.MainWindow); });
-
+        ipcMain.on(IPCEventType.SHOW_DIALOG_SAVE, () => Main.ShowSaveDialog(Main.MainWindow));
         ipcMain.on(IPCEventType.APP_QUIT, () => {
             if (Main.MainWindow.isClosable()) { Main.MainWindow.close(); }
             Main.Application.quit();

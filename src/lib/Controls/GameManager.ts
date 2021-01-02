@@ -80,7 +80,7 @@ export default class GameManager {
         PubSub.Subscribe(Channel.GAME_STATE_PIECE_SELECTED, this.subId, (c: Cell, p?: Piece) => this.OnPieceSelected(c, p));
         PubSub.Subscribe(Channel.GAME_STATE_PIECE_DESELECTED, this.subId, () => this.OnDeselectAll());
         PubSub.Subscribe(Channel.DESELECT_ALL_CELLS, this.subId, () => this.OnDeselectAll());
-        PubSub.Subscribe(Channel.GAME_STATE_SAVE, this.subId, () => this.SaveGame());
+        PubSub.Subscribe(Channel.UI_SAVE_DIALOG_RESULT, this.subId, (f: string) => this.SaveGame(f));
         PubSub.Subscribe(Channel.GAME_STATE_LOAD, this.subId, (f?: string) => this.LoadGame(f));
         PubSub.Subscribe(Channel.GAME_STATE_END_TURN, this.subId, (m: Move) => this.OnEndTurn(m));
         PubSub.Subscribe(Channel.GAME_STATE_UNDO, this.subId, () => this.Undo());
@@ -90,6 +90,7 @@ export default class GameManager {
 
     private CommitState(): void {
         if (!this.HeadDetached) return;
+        console.log("Committing to turn:", this.currentTurnNumber);
         while(this.turnHistory.turns.length > this.currentTurnNumber) {
             this.turnHistory.turns.pop();
         }
@@ -100,6 +101,7 @@ export default class GameManager {
         const lastTurn = this.currentTurnNumber - 1;
         const restoreTurn = this.turnHistory.turns[lastTurn - 1];
         if (isNullOrUndefined(restoreTurn)) return;
+        console.log("Undo to turn:", lastTurn);
         const cells = restoreTurn.boardState.map(c => Cell.FromState(c));
         this.cells = cells;
         this.currentTurnNumber = lastTurn;
@@ -113,6 +115,7 @@ export default class GameManager {
         const nextTurn = this.currentTurnNumber + 1;
         const restoreTurn = this.turnHistory.turns[nextTurn - 1];
         if (isNullOrUndefined(restoreTurn)) return;
+        console.log("Redo to turn", nextTurn);
         const cells = restoreTurn.boardState.map(c => Cell.FromState(c));
         this.cells = cells;
         this.currentTurnNumber = nextTurn;
@@ -135,7 +138,7 @@ export default class GameManager {
         const state = this.GetState(move);
         this.turnHistory.turns.push(state);
         this.currentTurnNumber++;
-        this.currentTurnPlayer = (this.currentTurnPlayer === Player.BLACK) ? Player.WHITE : Player.BLACK;
+        this.currentTurnPlayer = this.GetTurnPlayer(this.currentTurnNumber);
     }
 
     private GetState(move?: Move): GameTurn {
@@ -164,31 +167,23 @@ export default class GameManager {
         return (turn % 2 === 0) ? Player.BLACK : Player.WHITE;
     }
 
-    private SaveGame(): void {
+    private SaveGame(filename: string): void {
         const gameState: GameState = {
             history: this.turnHistory,
             player: this.currentTurnPlayer,
             turn: this.currentTurnNumber,
-            filename: "game.json"
+            filename: path.basename(filename)
         }
 
-        const outfile = path.resolve(__dirname, `../../../${gameState.filename}`);
         const serialized = JSON.stringify(gameState, null, 2);
-        fs.writeFileSync(outfile, serialized, {
+        fs.writeFileSync(filename, serialized, {
             encoding: "utf8"
         });
-        console.log("Game saved to", outfile);
+        console.log("Game saved to", filename);
     }
 
-    private CommitTurn(move: Move) {
-        const state = this.GetState();
-        state.move = move.GetState();
-        this.turnHistory.turns.push(state);
-        this.currentTurnNumber++;
-        this.currentTurnPlayer = GameManager.GetNextPlayer(this.currentTurnPlayer);
-    }
 
-    private static GetNextPlayer(currentPlayer: Player): Player {
+    private GetNextPlayer(currentPlayer: Player): Player {
         if (currentPlayer === Player.WHITE) return Player.BLACK;
         return Player.WHITE;
     }

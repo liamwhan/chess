@@ -1,4 +1,4 @@
-import { ipcRenderer } from "electron";
+import { ipcRenderer, remote } from "electron";
 import IPCEventType from "../IPCEventType";
 import { Channel } from "./Channels";
 import { PubSub } from "./PubSub";
@@ -22,7 +22,9 @@ export enum KeyCode {
     COMMAND_LEFT    = 91,
     COMMAND_RIGHT   = 93,
     SHIFT           = 16,
+    I               = 73,
     C               = 67,
+    D               = 68,
     L               = 76,
     S               = 83,
     Q               = 81,
@@ -90,6 +92,16 @@ export class KeyState {
                 e.preventDefault();
                 PubSub.Publish(Channel.GAME_STATE_COMMIT);
                 break;
+            case KeyCode.D:
+                if (!this.CtrlKeyDown) return;
+                e.preventDefault();
+                PubSub.Publish(Channel.DESELECT_ALL_CELLS);
+                break; 
+            case KeyCode.I:
+                if (!(this.CtrlKeyDown && this.ShiftKeyDown)) return;
+                e.preventDefault();
+                ipcRenderer.send(IPCEventType.SHOW_DEV_TOOLS);
+                break;
             case KeyCode.Q:
                 if (!this.CtrlKeyDown) return;
                 e.preventDefault();
@@ -98,8 +110,8 @@ export class KeyState {
             case KeyCode.S:
                 if (!this.CtrlKeyDown) return;
                 e.preventDefault();
-                PubSub.Publish(Channel.GAME_STATE_SAVE);
-                break;case KeyCode.S:
+                ipcRenderer.send(IPCEventType.SHOW_DIALOG_SAVE);
+                break;
             case KeyCode.L:
                 if (!this.CtrlKeyDown) return;
                 e.preventDefault();
