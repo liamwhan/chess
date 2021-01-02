@@ -7,6 +7,7 @@ import { IPoint, Point, Rect } from "./Math";
 import Cell from "./Cell";
 import { CellState } from "./CellState";
 import { CellShade } from "./CellShade";
+import { Move } from "./State/Move";
 
 export class Board {
 
@@ -50,6 +51,7 @@ export class Board {
         PubSub.Subscribe(Channel.REDRAW_CELL, this.subId, (c: Cell) => this.OnRedrawCell(c));
         PubSub.Subscribe(Channel.REDRAW_CELLS, this.subId, (c: Cell[]) => this.OnRedrawCells(c));
         PubSub.Subscribe(Channel.REDRAW_ALL_CELLS , this.subId, () => this.OnRedrawAllCells());
+        PubSub.Subscribe(Channel.GAME_STATE_MOVE_PIECE, this.subId, (m: Move) => this.OnRedrawAllCells());
     }
 
     private OnRedrawCells(cells: Cell[]): void {
@@ -96,7 +98,6 @@ export class Board {
     }
 
     private OnClick(clickPos: IPoint) : void {
-        PubSub.Publish(Channel.DESELECT_ALL_CELLS);
         if (!this.IsWithinCanvas(clickPos)) return;
         const canvasSpace = this.ToCanvasSpace(clickPos);
         this.gameManager.OnClick(canvasSpace);

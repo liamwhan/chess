@@ -32,7 +32,7 @@ export default class Main {
 
     public static OnReadyToShow(win: BrowserWindow) {
         win.show();
-        Main.ShowDevTools(win);
+        // Main.ShowDevTools(win);
     }
 
     public static CreateMain() {

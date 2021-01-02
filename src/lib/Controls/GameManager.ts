@@ -59,29 +59,91 @@ export default class GameManager {
 
     private subId: string = "GameManager";
     private currentSelection: Selection;
-    private currentGameState: GameTurn;
     private currentTurnPlayer: Player = Player.WHITE;
     private currentTurnNumber: number = 1;
     private turnHistory: GameTurnHistory = {
         turns: []
     };
-
+    
+    private get PieceSelected(): boolean {
+        return !isNullOrUndefined(this.currentSelection);
+    }
+    
+    private get HeadDetached(): boolean {
+        return this.currentTurnNumber !== this.turnHistory.turns.length;
+    }
+    
     constructor() {
         this.SetupGameBoard();
         this.turnHistory.turns.push(this.GetState());
         PubSub.Subscribe(Channel.LEGAL_MOVES_CALCULATED, this.subId, (m: Point[]) => this.OnLegalMovesCalculated(m));
         PubSub.Subscribe(Channel.GAME_STATE_PIECE_SELECTED, this.subId, (c: Cell, p?: Piece) => this.OnPieceSelected(c, p));
+        PubSub.Subscribe(Channel.GAME_STATE_PIECE_DESELECTED, this.subId, () => this.OnDeselectAll());
         PubSub.Subscribe(Channel.DESELECT_ALL_CELLS, this.subId, () => this.OnDeselectAll());
         PubSub.Subscribe(Channel.GAME_STATE_SAVE, this.subId, () => this.SaveGame());
         PubSub.Subscribe(Channel.GAME_STATE_LOAD, this.subId, (f?: string) => this.LoadGame(f));
+        PubSub.Subscribe(Channel.GAME_STATE_END_TURN, this.subId, (m: Move) => this.OnEndTurn(m));
+        PubSub.Subscribe(Channel.GAME_STATE_UNDO, this.subId, () => this.Undo());
+        PubSub.Subscribe(Channel.GAME_STATE_REDO, this.subId, () => this.Redo());
+        PubSub.Subscribe(Channel.GAME_STATE_COMMIT, this.subId, () => this.CommitState());
     }
 
-    private GetState(): GameTurn {
+    private CommitState(): void {
+        if (!this.HeadDetached) return;
+        while(this.turnHistory.turns.length > this.currentTurnNumber) {
+            this.turnHistory.turns.pop();
+        }
+    }
+
+    private Undo(): void {
+        if (this.currentTurnNumber <= 1) return;
+        const lastTurn = this.currentTurnNumber - 1;
+        const restoreTurn = this.turnHistory.turns[lastTurn - 1];
+        if (isNullOrUndefined(restoreTurn)) return;
+        const cells = restoreTurn.boardState.map(c => Cell.FromState(c));
+        this.cells = cells;
+        this.currentTurnNumber = lastTurn;
+        this.currentTurnPlayer = this.GetTurnPlayer(lastTurn);
+        this.currentSelection = null;
+        PubSub.Publish(Channel.REDRAW_ALL_CELLS);
+    }
+    
+    private Redo(): void {
+        if (!this.HeadDetached) return;
+        const nextTurn = this.currentTurnNumber + 1;
+        const restoreTurn = this.turnHistory.turns[nextTurn - 1];
+        if (isNullOrUndefined(restoreTurn)) return;
+        const cells = restoreTurn.boardState.map(c => Cell.FromState(c));
+        this.cells = cells;
+        this.currentTurnNumber = nextTurn;
+        this.currentTurnPlayer = this.GetTurnPlayer(nextTurn);
+        this.currentSelection = null;
+        PubSub.Publish(Channel.REDRAW_ALL_CELLS);
+
+    }
+    
+    private LoadState(state: GameState): void {
+        const latestTurn = state.history.turns[state.history.turns.length - 1];
+        const cells = latestTurn.boardState.map(c => Cell.FromState(c));
+        this.cells = cells;
+        this.currentTurnNumber = state.history.turns.length;
+        this.currentTurnPlayer = this.GetTurnPlayer(this.currentTurnNumber);
+        this.currentSelection = null;
+    }
+
+    private OnEndTurn(move: Move): void {
+        const state = this.GetState(move);
+        this.turnHistory.turns.push(state);
+        this.currentTurnNumber++;
+        this.currentTurnPlayer = (this.currentTurnPlayer === Player.BLACK) ? Player.WHITE : Player.BLACK;
+    }
+
+    private GetState(move?: Move): GameTurn {
         return {
             boardState: this.cells.map(c => c.GetState()),
             player: this.currentTurnPlayer,
             number: this.currentTurnNumber,
-            move: null
+            move: move?.GetState()
         }
     }
 
@@ -92,14 +154,14 @@ export default class GameManager {
         });
         const newState: GameState = JSON.parse(serialised);
         this.LoadState(newState);
+        console.log("Game loaded from", filepath);
         PubSub.Publish(Channel.REDRAW_ALL_CELLS);
     }
 
-    private LoadState(state: GameState): void {
-        const latestTurn = state.history.turns[state.history.turns.length - 1];
-        const cells = latestTurn.boardState.map(c => Cell.FromState(c));
-        this.cells = cells;
-
+   
+    
+    private GetTurnPlayer(turn: number) : Player {
+        return (turn % 2 === 0) ? Player.BLACK : Player.WHITE;
     }
 
     private SaveGame(): void {
@@ -178,8 +240,27 @@ export default class GameManager {
     }
 
     public OnClick(clickPosCS: Point): void {
+
         const clickedCell = this.Cells.find(c => c.IsColliding(clickPosCS));
         if (isNullOrUndefined(clickedCell)) return;
+
+        if (this.PieceSelected) {
+            if (this.currentSelection.cell !== clickedCell) {
+
+                const {cell, piece} = this.currentSelection;
+                const capturedPiece = clickedCell.Occupant;
+                const capture = clickedCell.IsOccupied;
+                
+                // Remove from original cell
+                cell.Occupant = null;
+                clickedCell.Occupant = piece;
+                const move = new Move(this.currentTurnPlayer, piece, cell, clickedCell, capture);
+                PubSub.Publish(Channel.GAME_STATE_MOVE_PIECE, move);
+                PubSub.Publish(Channel.DESELECT_ALL_CELLS);
+                PubSub.Publish(Channel.GAME_STATE_END_TURN, move);
+                return;
+            }
+        }
 
         clickedCell.OnCollision();
     }

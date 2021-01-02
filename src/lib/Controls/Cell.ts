@@ -26,6 +26,7 @@ export default class Cell {
         this.cellShade = cellShade;
         this.subId = "Cell-" + this.coordinates.toString(true);
         PubSub.Subscribe(Channel.DESELECT_ALL_CELLS, this.subId, () => this.OnDeselectAllCells());
+        PubSub.Subscribe(Channel.GAME_STATE_MOVE_PIECE, this.subId, () => this.OnDeselectAllCells())
     }
 
     public GetState(): BoardCell {
@@ -94,12 +95,11 @@ export default class Cell {
 
         this.selected = !this.selected;
         this.UpdateCellState();
-
-        if (this.State === CellState.Selected) {
-            PubSub.Publish(Channel.LEGAL_MOVES_CALCULATED, this.Occupant.CalculatePossibleMoves());
+        if (this.selected) {
+            PubSub.Publish(Channel.GAME_STATE_PIECE_SELECTED, this, this.Occupant);
+        } else {
+            PubSub.Publish(Channel.GAME_STATE_PIECE_DESELECTED, this, this.Occupant);
         }
-
-        PubSub.Publish(Channel.GAME_STATE_PIECE_SELECTED, this, this.Occupant);
         PubSub.Publish(Channel.REDRAW_CELL, this);
 
     }

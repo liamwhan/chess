@@ -22,6 +22,7 @@ export enum KeyCode {
     COMMAND_LEFT    = 91,
     COMMAND_RIGHT   = 93,
     SHIFT           = 16,
+    C               = 67,
     L               = 76,
     S               = 83,
     Q               = 81,
@@ -79,6 +80,16 @@ export class KeyState {
                 e.preventDefault();
                 this.CtrlKeyDown = true;
                 break;
+            case KeyCode.SHIFT:
+                if (this.ShiftKeyDown) return;
+                e.preventDefault();
+                this.ShiftKeyDown = true;
+                break;
+            case KeyCode.C:
+                if (!(this.ShiftKeyDown && this.CtrlKeyDown)) return;
+                e.preventDefault();
+                PubSub.Publish(Channel.GAME_STATE_COMMIT);
+                break;
             case KeyCode.Q:
                 if (!this.CtrlKeyDown) return;
                 e.preventDefault();
@@ -94,6 +105,17 @@ export class KeyState {
                 e.preventDefault();
                 PubSub.Publish(Channel.GAME_STATE_LOAD);
                 break;
+            case KeyCode.Z:
+                if (!this.CtrlKeyDown) return;
+                e.preventDefault();
+                PubSub.Publish(Channel.GAME_STATE_UNDO);
+                break;
+            case KeyCode.Y:
+                if (!this.CtrlKeyDown) return;
+                e.preventDefault();
+                PubSub.Publish(Channel.GAME_STATE_REDO);
+                break;
+            
             default:
                 return;
         }
@@ -104,8 +126,13 @@ export class KeyState {
             case KeyCode.CONTROL:
             case KeyCode.COMMAND_LEFT:
             case KeyCode.COMMAND_RIGHT:
-                if (!this.CtrlKeyDown) { return; }
+                if (!this.CtrlKeyDown) return;
                 this.CtrlKeyDown = false;
+                break;
+            case KeyCode.SHIFT:
+                if (!this.ShiftKeyDown) return;
+                e.preventDefault();
+                this.ShiftKeyDown = false;
                 break;
             default:
                 return;
