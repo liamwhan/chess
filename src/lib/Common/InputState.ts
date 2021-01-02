@@ -26,6 +26,7 @@ export enum KeyCode {
     C               = 67,
     D               = 68,
     L               = 76,
+    O               = 79,
     S               = 83,
     Q               = 81,
     Z               = 90,
@@ -102,6 +103,12 @@ export class KeyState {
                 e.preventDefault();
                 ipcRenderer.send(IPCEventType.SHOW_DEV_TOOLS);
                 break;
+            case KeyCode.L:
+            case KeyCode.O:
+                if (!this.CtrlKeyDown) return;
+                e.preventDefault();
+                ipcRenderer.send(IPCEventType.SHOW_DIALOG_OPEN);
+                break;
             case KeyCode.Q:
                 if (!this.CtrlKeyDown) return;
                 e.preventDefault();
@@ -111,11 +118,6 @@ export class KeyState {
                 if (!this.CtrlKeyDown) return;
                 e.preventDefault();
                 ipcRenderer.send(IPCEventType.SHOW_DIALOG_SAVE);
-                break;
-            case KeyCode.L:
-                if (!this.CtrlKeyDown) return;
-                e.preventDefault();
-                PubSub.Publish(Channel.GAME_STATE_LOAD);
                 break;
             case KeyCode.Z:
                 if (!this.CtrlKeyDown) return;

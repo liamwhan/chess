@@ -96,9 +96,25 @@ export default class Main {
         }
     }
 
+    public static ShowOpenDialog(win: BrowserWindow): void {
+        const openFiles = dialog.showOpenDialogSync(win, {
+            title: "Load Game",
+            buttonLabel: "Open Game",
+            filters: [
+                {name: "Chess JSON Files", extensions: ["cjson", "json"]}
+            ],
+            properties: ["openFile"]
+        });
+
+        if (openFiles !== undefined) {
+            win.webContents.send(IPCEventType.OPEN_DIALOG_RESULT, openFiles.pop());
+        }
+    }
+
     public static SetupIPC() {
         ipcMain.on(IPCEventType.SHOW_DEV_TOOLS, () => { Main.ShowDevTools(Main.MainWindow); });
         ipcMain.on(IPCEventType.SHOW_DIALOG_SAVE, () => Main.ShowSaveDialog(Main.MainWindow));
+        ipcMain.on(IPCEventType.SHOW_DIALOG_OPEN, () => Main.ShowOpenDialog(Main.MainWindow));
         ipcMain.on(IPCEventType.APP_QUIT, () => {
             if (Main.MainWindow.isClosable()) { Main.MainWindow.close(); }
             Main.Application.quit();

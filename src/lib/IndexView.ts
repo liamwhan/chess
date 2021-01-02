@@ -19,6 +19,7 @@ $(() => {
     $btnQuit.on("click", () => { ipcRenderer.send(IPCEventType.APP_QUIT); });
     $btnDevTools.on("click", () => { ipcRenderer.send(IPCEventType.SHOW_DEV_TOOLS); });
     ipcRenderer.on(IPCEventType.SAVE_DIALOG_RESULT, (e: Electron.IpcRendererEvent, result: string) => PubSub.Publish(Channel.UI_SAVE_DIALOG_RESULT, result));
+    ipcRenderer.on(IPCEventType.OPEN_DIALOG_RESULT, (e: Electron.IpcRendererEvent, result: string) => PubSub.Publish(Channel.UI_OPEN_DIALOG_RESULT, result));
     new Board()
         .DrawBoard()
         .DrawPieces()

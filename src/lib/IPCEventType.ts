@@ -9,5 +9,6 @@ export default class IPCEventType {
     public static readonly SHOW_DIALOG_OPEN: string = "SHOW_DIALOG_OPEN";
 
     public static readonly SAVE_DIALOG_RESULT: string = "SAVE_DIALOG_RESULT";
+    public static readonly OPEN_DIALOG_RESULT: string = "OPEN_DIALOG_RESULT";
 
 }

@@ -81,7 +81,7 @@ export default class GameManager {
         PubSub.Subscribe(Channel.GAME_STATE_PIECE_DESELECTED, this.subId, () => this.OnDeselectAll());
         PubSub.Subscribe(Channel.DESELECT_ALL_CELLS, this.subId, () => this.OnDeselectAll());
         PubSub.Subscribe(Channel.UI_SAVE_DIALOG_RESULT, this.subId, (f: string) => this.SaveGame(f));
-        PubSub.Subscribe(Channel.GAME_STATE_LOAD, this.subId, (f?: string) => this.LoadGame(f));
+        PubSub.Subscribe(Channel.UI_OPEN_DIALOG_RESULT, this.subId, (f: string) => this.LoadGame(f));
         PubSub.Subscribe(Channel.GAME_STATE_END_TURN, this.subId, (m: Move) => this.OnEndTurn(m));
         PubSub.Subscribe(Channel.GAME_STATE_UNDO, this.subId, () => this.Undo());
         PubSub.Subscribe(Channel.GAME_STATE_REDO, this.subId, () => this.Redo());
@@ -150,14 +150,14 @@ export default class GameManager {
         }
     }
 
-    private LoadGame(filename?: string) {
-        const filepath = path.resolve(__dirname, `../../../game.json`);
-        const serialised = fs.readFileSync(filepath, {
+    private LoadGame(filename: string) {
+        console.log("Open Dialog Result", filename);
+        const serialised = fs.readFileSync(filename, {
             encoding: "utf8"
         });
         const newState: GameState = JSON.parse(serialised);
         this.LoadState(newState);
-        console.log("Game loaded from", filepath);
+        console.log("Game loaded from", filename);
         PubSub.Publish(Channel.REDRAW_ALL_CELLS);
     }
 
