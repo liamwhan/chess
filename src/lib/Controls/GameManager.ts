@@ -189,7 +189,7 @@ export default class GameManager {
             filename: path.basename(filename)
         }
 
-        const serialized = JSON.stringify(gameState, null, 2);
+        const serialized = JSON.stringify(gameState);
         fs.writeFileSync(filename, serialized, {
             encoding: "utf8"
         });

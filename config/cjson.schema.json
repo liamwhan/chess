@@ -39,63 +39,225 @@
                                 "description": "Indicates the player that made this move (White or Black)",
                                 "type": "string"
                             },
-                            "turn": {
+                            "number": {
                                 "description": "The turn number this object represents",
                                 "type": "number",
                                 "exclusiveMinimum": 0
                             },
-                            "boardState":  {
-                                "description": "An array of length 64 containing a cell representation of every cell on the board",
-                                "type": "array",
-                                "items": {
-                                    "type": "object",
-                                    "properties": {
-                                        "location": {
-                                            "description": "This cell's x,y position on the board",
-                                            "type": "object",
-                                            "properties": {
-                                                "x": {
-                                                    "type": "number",
-                                                    "description": "This cell's x ordinate"
-                                                },
-                                                "y": {
-                                                    "type": "number",
-                                                    "description": "This cell's y ordinate"
-                                                }
-                                            },
-                                            "required": ["x", "y"]
-                                        },
-                                        "shade": {
-                                            "description": "Indicates whether this is a light or dark cell.",
-                                            "type": "string"
-                                        },
-                                        "occupant": {
-                                            "description": "Optional. An object representing the piece occupying this cell if any",
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "description": "A string identifier of the piece type",
-                                                    "type": "string"
-                                                },
-                                                "player": {
-                                                    "description": "The player (White or Black) that owns this piece",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": ["id", "player"]
-                                        }
+                            "move": {
+                                "type": ["object", "null"],
+                                "properties": {
+                                    "player": {
+                                        "description": "The player that made this move",
+                                        "type": "string"
                                     },
-                                    "required": ["location", "shade"]
-                                }
-                            } 
+                                    "piece": {
+                                        "description": "An object representing the piece that was moved",
+                                        "type": [
+                                            "object",
+                                            "null"
+                                        ],
+                                        "properties": {
+                                            "id": {
+                                                "description": "A string identifier of the piece type",
+                                                "type": "string"
+                                            },
+                                            "player": {
+                                                "description": "The player (White or Black) that owns this piece",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "id",
+                                            "player"
+                                        ]
+                                    },
+                                    "from": {
+                                        "description": "The origin cell of this move",
+                                        "type": "object",
+                                        "properties": {
+                                            "location": {
+                                                "description": "This cell's x,y position on the board",
+                                                "type": "object",
+                                                "properties": {
+                                                    "x": {
+                                                        "type": "number",
+                                                        "description": "This cell's x ordinate"
+                                                    },
+                                                    "y": {
+                                                        "type": "number",
+                                                        "description": "This cell's y ordinate"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "x",
+                                                    "y"
+                                                ]
+                                            },
+                                            "shade": {
+                                                "description": "Indicates whether this is a light or dark cell.",
+                                                "type": "string"
+                                            },
+                                            "occupant": {
+                                                "description": "Optional. An object representing the piece occupying this cell if any",
+                                                "type": [
+                                                    "object",
+                                                    "null"
+                                                ],
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "A string identifier of the piece type",
+                                                        "type": "string"
+                                                    },
+                                                    "player": {
+                                                        "description": "The player (White or Black) that owns this piece",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "player"
+                                                ]
+                                            }
+                                        },
+                                        "required": [
+                                            "location",
+                                            "shade"
+                                        ]
+                                    },
+                                    "to": {
+                                        "description": "The destination cell of this move",
+                                        "type": "object",
+                                        "properties": {
+                                            "location": {
+                                                "description": "This cell's x,y position on the board",
+                                                "type": "object",
+                                                "properties": {
+                                                    "x": {
+                                                        "type": "number",
+                                                        "description": "This cell's x ordinate"
+                                                    },
+                                                    "y": {
+                                                        "type": "number",
+                                                        "description": "This cell's y ordinate"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "x",
+                                                    "y"
+                                                ]
+                                            },
+                                            "shade": {
+                                                "description": "Indicates whether this is a light or dark cell.",
+                                                "type": "string"
+                                            },
+                                            "occupant": {
+                                                "description": "Optional. An object representing the piece occupying this cell if any",
+                                                "type": [
+                                                    "object",
+                                                    "null"
+                                                ],
+                                                "properties": {
+                                                    "id": {
+                                                        "description": "A string identifier of the piece type",
+                                                        "type": "string"
+                                                    },
+                                                    "player": {
+                                                        "description": "The player (White or Black) that owns this piece",
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "id",
+                                                    "player"
+                                                ]
+                                            }
+                                        },
+                                        "required": [
+                                            "location",
+                                            "shade"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "player",
+                                    "piece",
+                                    "from",
+                                    "to"
+                                ]
+                            }
                         },
-                        "required": ["player", "boardState", "turn"]
-                    }
+                        "boardState": {
+                            "description": "An array of length 64 containing a cell representation of every cell on the board",
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "location": {
+                                        "description": "This cell's x,y position on the board",
+                                        "type": "object",
+                                        "properties": {
+                                            "x": {
+                                                "type": "number",
+                                                "description": "This cell's x ordinate"
+                                            },
+                                            "y": {
+                                                "type": "number",
+                                                "description": "This cell's y ordinate"
+                                            }
+                                        },
+                                        "required": [
+                                            "x",
+                                            "y"
+                                        ]
+                                    },
+                                    "shade": {
+                                        "description": "Indicates whether this is a light or dark cell.",
+                                        "type": "string"
+                                    },
+                                    "occupant": {
+                                        "description": "Optional. An object representing the piece occupying this cell if any",
+                                        "type": [
+                                            "object",
+                                            "null"
+                                        ],
+                                        "properties": {
+                                            "id": {
+                                                "description": "A string identifier of the piece type",
+                                                "type": "string"
+                                            },
+                                            "player": {
+                                                "description": "The player (White or Black) that owns this piece",
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "id",
+                                            "player"
+                                        ]
+                                    }
+                                },
+                                "required": [
+                                    "location",
+                                    "shade"
+                                ]
+                            }
+                        }
+                    },
+                    "required": [
+                        "player",
+                        "boardState",
+                        "number"
+                    ]
                 }
             },
             "required": ["turns"]
         }
-        
     },
-    "required": ["player", "turn", "filename", "history"]
+    "required": [
+        "nextPlayer",
+        "turn",
+        "filename",
+        "history"
+    ]
 }
