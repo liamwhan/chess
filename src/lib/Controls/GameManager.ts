@@ -59,8 +59,12 @@ export default class GameManager {
 
     private subId: string = "GameManager";
     private currentSelection: Selection;
-    private currentTurnPlayer: Player = Player.WHITE;
+    private get currentTurnPlayer(): Player {
+        return this.GetTurnPlayer(this.currentTurnNumber);
+    } 
     private currentTurnNumber: number = 1;
+    private whiteName: string = null;
+    private blackName: string = null;
     private turnHistory: GameTurnHistory = {
         turns: []
     };
@@ -80,12 +84,15 @@ export default class GameManager {
         PubSub.Subscribe(Channel.GAME_STATE_PIECE_SELECTED, this.subId, (c: Cell, p?: Piece) => this.OnPieceSelected(c, p));
         PubSub.Subscribe(Channel.GAME_STATE_PIECE_DESELECTED, this.subId, () => this.OnDeselectAll());
         PubSub.Subscribe(Channel.DESELECT_ALL_CELLS, this.subId, () => this.OnDeselectAll());
-        PubSub.Subscribe(Channel.UI_SAVE_DIALOG_RESULT, this.subId, (f: string) => this.SaveGame(f));
-        PubSub.Subscribe(Channel.UI_OPEN_DIALOG_RESULT, this.subId, (f: string) => this.LoadGame(f));
         PubSub.Subscribe(Channel.GAME_STATE_END_TURN, this.subId, (m: Move) => this.OnEndTurn(m));
         PubSub.Subscribe(Channel.GAME_STATE_UNDO, this.subId, () => this.Undo());
         PubSub.Subscribe(Channel.GAME_STATE_REDO, this.subId, () => this.Redo());
         PubSub.Subscribe(Channel.GAME_STATE_COMMIT, this.subId, () => this.CommitState());
+        
+        PubSub.Subscribe(Channel.UI_SAVE_DIALOG_RESULT, this.subId, (f: string) => this.SaveGame(f));
+        PubSub.Subscribe(Channel.UI_OPEN_DIALOG_RESULT, this.subId, (f: string) => this.LoadGame(f));
+        PubSub.Subscribe(Channel.UI_BLACK_NAME_CHANGE, this.subId, (name: string) => this.blackName = name);
+        PubSub.Subscribe(Channel.UI_WHITE_NAME_CHANGE, this.subId, (name: string) => this.whiteName = name);
     }
 
     private CommitState(): void {
@@ -105,8 +112,8 @@ export default class GameManager {
         const cells = restoreTurn.boardState.map(c => Cell.FromState(c));
         this.cells = cells;
         this.currentTurnNumber = lastTurn;
-        this.currentTurnPlayer = this.GetTurnPlayer(lastTurn);
         this.currentSelection = null;
+        PubSub.Publish(Channel.GAME_STATE_TURN_CHANGE, lastTurn);
         PubSub.Publish(Channel.REDRAW_ALL_CELLS);
     }
     
@@ -119,8 +126,8 @@ export default class GameManager {
         const cells = restoreTurn.boardState.map(c => Cell.FromState(c));
         this.cells = cells;
         this.currentTurnNumber = nextTurn;
-        this.currentTurnPlayer = this.GetTurnPlayer(nextTurn);
         this.currentSelection = null;
+        PubSub.Publish(Channel.GAME_STATE_TURN_CHANGE, nextTurn);
         PubSub.Publish(Channel.REDRAW_ALL_CELLS);
 
     }
@@ -130,15 +137,20 @@ export default class GameManager {
         const cells = latestTurn.boardState.map(c => Cell.FromState(c));
         this.cells = cells;
         this.currentTurnNumber = state.history.turns.length;
-        this.currentTurnPlayer = this.GetTurnPlayer(this.currentTurnNumber);
         this.currentSelection = null;
+        this.whiteName = state.whiteName || null;
+        this.blackName = state.blackName || null;
+        PubSub.Publish(Channel.GAME_STATE_SET_BLACK_NAME, this.blackName);
+        PubSub.Publish(Channel.GAME_STATE_SET_WHITE_NAME, this.whiteName);
+        PubSub.Publish(Channel.GAME_STATE_TURN_CHANGE, this.currentTurnNumber);
     }
 
     private OnEndTurn(move: Move): void {
         const state = this.GetState(move);
         this.turnHistory.turns.push(state);
         this.currentTurnNumber++;
-        this.currentTurnPlayer = this.GetTurnPlayer(this.currentTurnNumber);
+        this.currentSelection = null;
+        PubSub.Publish(Channel.GAME_STATE_TURN_CHANGE, this.currentTurnNumber);
     }
 
     private GetState(move?: Move): GameTurn {
@@ -170,8 +182,10 @@ export default class GameManager {
     private SaveGame(filename: string): void {
         const gameState: GameState = {
             history: this.turnHistory,
-            player: this.currentTurnPlayer,
+            nextPlayer: this.currentTurnPlayer,
             turn: this.currentTurnNumber,
+            blackName: this.blackName,
+            whiteName: this.whiteName,
             filename: path.basename(filename)
         }
 
@@ -180,12 +194,6 @@ export default class GameManager {
             encoding: "utf8"
         });
         console.log("Game saved to", filename);
-    }
-
-
-    private GetNextPlayer(currentPlayer: Player): Player {
-        if (currentPlayer === Player.WHITE) return Player.BLACK;
-        return Player.WHITE;
     }
 
     private SetupGameBoard(): void {

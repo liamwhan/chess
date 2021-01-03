@@ -1,0 +1,101 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://github.com/liamwhan/chess/tree/master/config/cjson.schema.json",
+    "title": "Chess Game State Schema",
+    "type": "object",
+    "properties": {
+        "player": {
+            "description": "Indicates the next player to take a move (White or Black)",
+            "type": "string"
+        },
+        "turn": {
+            "description": "Current turn number",
+            "type": "number",
+            "exclusiveMinimum": 0
+        },
+        "blackName": {
+            "description": "An optional name of the player controlling the Black pieces",
+            "type": "string"
+        },
+        "whiteName": {
+            "description": "An optional name of the player controlling the White pieces",
+            "type": "string"
+        },
+        "filename": {
+            "description": "The basename of this file without the enclosing path",
+            "type": "string"
+        },
+        "history": {
+            "description": "Contains the history of turns taken in this game",
+            "type": "object",
+            "properties": {
+                "turns": {
+                    "description": "Array of the turns taken in this game",
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "player": {
+                                "description": "Indicates the player that made this move (White or Black)",
+                                "type": "string"
+                            },
+                            "turn": {
+                                "description": "The turn number this object represents",
+                                "type": "number",
+                                "exclusiveMinimum": 0
+                            },
+                            "boardState":  {
+                                "description": "An array of length 64 containing a cell representation of every cell on the board",
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "location": {
+                                            "description": "This cell's x,y position on the board",
+                                            "type": "object",
+                                            "properties": {
+                                                "x": {
+                                                    "type": "number",
+                                                    "description": "This cell's x ordinate"
+                                                },
+                                                "y": {
+                                                    "type": "number",
+                                                    "description": "This cell's y ordinate"
+                                                }
+                                            },
+                                            "required": ["x", "y"]
+                                        },
+                                        "shade": {
+                                            "description": "Indicates whether this is a light or dark cell.",
+                                            "type": "string"
+                                        },
+                                        "occupant": {
+                                            "description": "Optional. An object representing the piece occupying this cell if any",
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "A string identifier of the piece type",
+                                                    "type": "string"
+                                                },
+                                                "player": {
+                                                    "description": "The player (White or Black) that owns this piece",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": ["id", "player"]
+                                        }
+                                    },
+                                    "required": ["location", "shade"]
+                                }
+                            } 
+                        },
+                        "required": ["player", "boardState", "turn"]
+                    }
+                }
+            },
+            "required": ["turns"]
+        }
+        
+    },
+    "required": ["player", "turn", "filename", "history"]
+}

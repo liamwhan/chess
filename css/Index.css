@@ -1,4 +1,8 @@
 
+nav {
+    min-height: 32px;
+}
+
 main, #drawing {
     min-width: 100%;
     min-height: 84vh;

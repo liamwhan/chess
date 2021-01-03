@@ -11,8 +11,8 @@ html(lang="en")
     link(rel="stylesheet" href="../../css/Index.css")
   body
     nav.navbar.navbar-expand-lg.navbar-dark.bg-success.justify-content-between.mb-2.drag.pointer
-      a.navbar-brand.no-select(href="#") Chess Game Recorder
-      ul#navwin.navbar-nav.ml-2.btn-group.my-2.no-drag
+      a.navbar-brand.no-select(href="#").hide-mac Chess Game Recorder
+      ul#navwin.navbar-nav.ml-2.btn-group.my-2.no-drag.hide-mac
         li#btnDevTools.nav-item.btn.btn-success(type="button" title="Open Developer Tools")
           i.far.fa-search
         li#btnMinimise.nav-item.btn.btn-success(type="button" title="Minimise")
@@ -23,15 +23,34 @@ html(lang="en")
           i.fas.fa-window-close
     main.container
       .row 
-        .col.d-flex.justify-content-center
-          span.text-danger Next Move:
-          span#nextMovePlayer.text-success White
+        .col
+          .row.align-items-baseline
+            .col-sm-3.my-1
+              .form-group
+                input#whiteName.form-control(type="text" placeholder="Player Name")
+                small.text-muted White
+            .col-sm-3.my-1
+              .form-inline
+                button#undo.btn.btn-primary(type="button")
+                  i.fas.fa-step-backward
+                input#turn.form-control.mx-1(type="number" readonly value="1")
+                button#redo.btn.btn-primary(type="button")
+                  i.fas.fa-step-forward
+                //- .col
+            .col-sm-3.my-1
+              .form-group
+                input#player.form-control(type="text" readonly value="White")
+                small.text-muted Next Move
+            .col-sm-3.my-1
+              .form-group
+                input#blackName.form-control(type="text" placeholder="Player Name")
+                small.text-muted Black
+
       .row
         .col.d-flex.justify-content-around     
           #container
             canvas#board
     footer.footer
-      // Load jquery and SVG.js via require
       script.
         window.$ = window.JQuery = require("jquery");
         window.Bootstrap = require("bootstrap");

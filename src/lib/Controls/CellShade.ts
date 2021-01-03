@@ -1,6 +1,6 @@
 
 
 export enum CellShade {
-    DARK,
-    LIGHT
+    DARK = "Dark",
+    LIGHT = "Light"
 }

@@ -4,7 +4,19 @@ import * as path from "path";
 import * as url from "url";
 import IPCEventType from "./IPCEventType";
 import { Config } from "./Config";
+import { isMacOs, isWin32 } from "./Common/Utils";
 
+function GetIcon(): string {
+    if (isMacOs()) {
+        return "CustomIcon.icns";
+    }
+
+    if (isWin32()) {
+        return "CustomIcon.ico";
+    }
+    
+    return "CustomIcon.png";
+}
 // Initialise Logging plugin
 log.transports.file.level = (Config.Logging.File.Enabled) ? Config.Logging.File.Level : false;
 log.transports.console.level = (Config.Logging.Console.Enabled) ? Config.Logging.Console.Level : false;
@@ -41,12 +53,14 @@ export default class Main {
             height: 1080,
             frame: false,
             show: false,
-            icon: path.resolve(__dirname, "../../icons/CustomIcon.icns"),
+            icon: path.resolve(__dirname, `../../icons/${GetIcon()}`),
+            titleBarStyle: "hidden",
+            trafficLightPosition: { x: 16, y: 16 },
             webPreferences: {
                 devTools: true,
                 nodeIntegration: true,
                 contextIsolation: false,
-                enableRemoteModule: true
+                enableRemoteModule: true,
             }
         };
 
@@ -61,7 +75,7 @@ export default class Main {
             Main.MainWindow.webContents.send(IPCEventType.MAIN_WINDOW_BLUR);
         });
 
-        Main.MainWindow.loadURL(url.format({pathname: Main.IndexPath, protocol: "file", slashes: true}));
+        Main.MainWindow.loadURL(url.format({ pathname: Main.IndexPath, protocol: "file", slashes: true }));
 
         Main.SetupIPC();
 
@@ -83,7 +97,7 @@ export default class Main {
             buttonLabel: "Save",
             title: "Save Game",
             filters: [
-                {name: "Chess JSON Files", extensions: ["cjson", "json"]}
+                { name: "Chess JSON Files", extensions: ["cjson", "json"] }
             ],
             properties: [
                 "createDirectory",
@@ -102,7 +116,7 @@ export default class Main {
             title: "Load Game",
             buttonLabel: "Open Game",
             filters: [
-                {name: "Chess JSON Files", extensions: ["cjson", "json"]}
+                { name: "Chess JSON Files", extensions: ["cjson", "json"] }
             ],
             properties: ["openFile"]
         });

@@ -1,7 +1,7 @@
 {
-  "name": "electronts",
+  "name": "chess",
   "version": "1.0.0",
-  "description": "Electron Typescript Bootstrap Boilerplate",
+  "description": "Chess game recorder",
   "main": "dist/lib/App.js",
   "scripts": {
     "start": "npm-run-all --sequential build electron",
